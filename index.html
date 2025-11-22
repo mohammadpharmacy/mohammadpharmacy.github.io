@@ -632,6 +632,11 @@
             direction: ltr;
             unicode-bidi: embed;
         }
+
+        /* reCAPTCHA Badge Hide */
+        .grecaptcha-badge {
+            visibility: hidden;
+        }
         
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -789,14 +794,22 @@
 
             const recaptchaObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting && !recaptchaLoaded) {
-                        const script = document.createElement('script');
-                        script.src = `https://www.google.com/recaptcha/api.js?render=6LfrYRUsAAAAAAavLZzwCvEwdAVLHCiiJfbLYbIH`;
-                        script.async = true;
-                        script.defer = true;
-                        document.head.appendChild(script);
-                        recaptchaLoaded = true;
-                        observer.disconnect(); // Stop observing once loaded
+                    if (entry.isIntersecting) {
+                        if (!recaptchaLoaded) {
+                            const script = document.createElement('script');
+                            script.src = `https://www.google.com/recaptcha/api.js?render=6LfrYRUsAAAAAAavLZzwCvEwdAVLHCiiJfbLYbIH`;
+                            script.async = true;
+                            script.defer = true;
+                            document.head.appendChild(script);
+                            recaptchaLoaded = true;
+                        }
+                        // Show the reCAPTCHA badge
+                        document.querySelector('.grecaptcha-badge').style.visibility = 'visible';
+                    } else {
+                        // Hide the reCAPTCHA badge when not intersecting
+                        if (document.querySelector('.grecaptcha-badge')) {
+                            document.querySelector('.grecaptcha-badge').style.visibility = 'hidden';
+                        }
                     }
                 });
             }, {
