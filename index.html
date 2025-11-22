@@ -807,7 +807,7 @@
                         document.querySelector('.grecaptcha-badge').style.visibility = 'visible';
                     } else {
                         // Hide the reCAPTCHA badge when not intersecting
-                        if (document.querySelector('.grecaptcha-badge')) {
+                        if (recaptchaLoaded && document.querySelector('.grecaptcha-badge')) {
                             document.querySelector('.grecaptcha-badge').style.visibility = 'hidden';
                         }
                     }
