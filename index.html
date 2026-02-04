@@ -2,8 +2,8 @@
 <html class="light scroll-smooth" lang="en" dir="ltr">
 <head>
     <meta charset="utf-8"/>
-    <!-- Viewport Fix: maximum-scale=1 prevents unwanted auto-zooming -->
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <!-- Viewport Fix: Allow user scaling for Accessibility -->
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     
     <!-- SEO Meta Tags -->
     <title data-i18n="page_title">Mohammad Pharmacy | Trusted Care in Yabroud</title>
@@ -17,34 +17,32 @@
     <!-- Favicon -->
     <link rel="icon" href="/photos/favicon.png">
     
-    <!-- Fonts (English & Arabic) -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800&family=Manrope:wght@400;500;700;800&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- Production CSS -->
+    <link href="styles.css" rel="stylesheet">
+
+    <!-- Anti-FOUC (Flash of Unstyled Content) Language Logic -->
     <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#1e3a8a", 
-                        "primary-light": "#3b82f6",
-                        "background-light": "#f8fafc",
-                        "background-dark": "#0f172a",
-                        "slate-850": "#1e293b",
-                    },
-                    fontFamily: {
-                        "display": ["Manrope", "Noto Sans", "sans-serif"],
-                        "arabic": ["Cairo", "sans-serif"] // Specific font for Arabic
-                    },
-                    borderRadius: { "lg": "1rem", "xl": "1.5rem" },
-                },
-            },
-        }
+        (function() {
+            const savedLang = localStorage.getItem('lang') || 'en';
+            const html = document.documentElement;
+            html.setAttribute('lang', savedLang);
+            html.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
+            
+            // Apply font class immediately to HTML tag
+            if (savedLang === 'ar') {
+                html.classList.add('font-arabic');
+                html.classList.remove('font-display');
+            } else {
+                html.classList.add('font-display');
+                html.classList.remove('font-arabic');
+            }
+        })();
     </script>
     
     <style>
@@ -60,81 +58,80 @@
             opacity: 1;
         }
         
-        /* Prevent Layout Shift */
         .aspect-video { aspect-ratio: 16 / 9; }
-        
-        /* Fix Anchor Scrolling Offset due to Fixed Header */
         html { scroll-padding-top: 100px; }
 
         /* RTL Specifics */
-        [dir="rtl"] .material-symbols-outlined.flip-rtl {
-            transform: scaleX(-1);
-        }
-        /* Make hero title spans appear on same line in Arabic */
+        [dir="rtl"] .material-symbols-outlined.flip-rtl { transform: scaleX(-1); }
         html[dir="rtl"] .hero-break { display: none !important; }
-        /* Make day indicators larger and bolder in Arabic */
         html[dir="rtl"] [data-i18n="days_week"],
         html[dir="rtl"] [data-i18n="day_friday"] {
             font-size: 1.1rem !important;
             font-weight: 800 !important;
             letter-spacing: 0.005em;
         }
-            /* Email: prevent wrapping and use a responsive/dynamic font size */
-            .no-wrap-dynamic-email {
-                /* Allow wrapping on small screens to avoid overflow; keep nowrap on md+ */
-                white-space: normal;
-                display: inline-block;
-                font-size: clamp(0.95rem, 1.5vw, 1.125rem) !important;
-            }
 
-            @media (min-width: 768px) {
-                .no-wrap-dynamic-email {
-                    white-space: nowrap;
-                    display: inline-block;
-                }
-            }
-            /* Hero descriptor underline (aligns right in Arabic) */
-            .hero-desc { position: relative; padding-bottom: 0.9rem; }
-            .hero-desc::after {
-                content: "";
-                position: absolute;
-                height: 4px;
-                width: 5.5rem;
-                bottom: -0.45rem;
-                left: 0;
-                background: rgba(59,130,246,0.9);
-                border-radius: 999px;
-                transform-origin: left center;
-            }
-            html[dir="rtl"] .hero-desc { text-align: right !important; }
-            html[dir="rtl"] .hero-desc::after { left: auto; right: 0; transform-origin: right center; }
+        /* Email Dynamic Sizing */
+        .no-wrap-dynamic-email {
+            white-space: normal;
+            display: inline-block;
+            font-size: clamp(0.95rem, 1.5vw, 1.125rem) !important;
+        }
+        @media (min-width: 768px) {
+            .no-wrap-dynamic-email { white-space: nowrap; }
+        }
 
-            /* Page load fade-in animation */
-            .fade-in { opacity: 0; transform: translateY(10px); transition: opacity 640ms cubic-bezier(.2,.9,.2,1), transform 640ms cubic-bezier(.2,.9,.2,1); }
-            body.loaded .fade-in { opacity: 1; transform: none; }
-            /* Small stagger for header/main/footer */
-            body.loaded .fade-in--h { transition-delay: 0s; }
-            body.loaded .fade-in--m { transition-delay: 0.08s; }
-            body.loaded .fade-in--f { transition-delay: 0.16s; }
+        /* Hero Underline */
+        .hero-desc { position: relative; padding-bottom: 0.9rem; }
+        .hero-desc::after {
+            content: "";
+            position: absolute;
+            height: 4px;
+            width: 5.5rem;
+            bottom: -0.45rem;
+            left: 0;
+            background: rgba(59,130,246,0.9);
+            border-radius: 999px;
+            transform-origin: left center;
+        }
+        html[dir="rtl"] .hero-desc { text-align: right !important; }
+        html[dir="rtl"] .hero-desc::after { left: auto; right: 0; transform-origin: right center; }
 
-            /* Hero background image tweaks: slight transparency and shifted up content */
-            .hero-bg-img {
-                object-position: center 18%;
-                transition: transform 600ms cubic-bezier(.2,.9,.2,1);
-            }
-            /* Hide reCAPTCHA badge by default; reveal only when body has .show-recaptcha-badge */
-            .grecaptcha-badge { display: none !important; }
-            body.show-recaptcha-badge .grecaptcha-badge { display: block !important; }
+        /* Animations */
+        .fade-in { opacity: 0; transform: translateY(10px); transition: opacity 640ms cubic-bezier(.2,.9,.2,1), transform 640ms cubic-bezier(.2,.9,.2,1); }
+        body.loaded .fade-in { opacity: 1; transform: none; }
+        body.loaded .fade-in--h { transition-delay: 0s; }
+        body.loaded .fade-in--m { transition-delay: 0.08s; }
+        body.loaded .fade-in--f { transition-delay: 0.16s; }
+
+        .hero-bg-img {
+            object-position: center 18%;
+            transition: transform 600ms cubic-bezier(.2,.9,.2,1);
+        }
+
+        /* --- FIXED RECAPTCHA STYLES --- */
+        /* Do NOT use display:none, it prevents Google from calculating dimensions */
+        .grecaptcha-badge { 
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 50;
+        }
+        /* Reveal when class is added */
+        body.show-recaptcha-badge .grecaptcha-badge { 
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
     </style>
 </head>
 
-<body id="top" class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased selection:bg-primary/20 pt-20 overflow-x-hidden">
+<body id="top" class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white antialiased selection:bg-primary/20 pt-20 overflow-x-hidden">
 
     <!-- Header -->
     <header class="fixed top-0 left-0 right-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md shadow-sm fade-in fade-in--h">
         <div class="px-4 md:px-10 py-3 flex items-center justify-between max-w-[1440px] mx-auto relative z-50 bg-inherit">
             <!-- Logo -->
-                <div class="flex items-center gap-3 md:gap-4 cursor-pointer" onclick="window.location.href='#top'">
+            <div class="flex items-center gap-3 md:gap-4 cursor-pointer" onclick="window.location.href='#top'">
                 <div class="flex items-center justify-center size-9 md:size-10 bg-white/0 shrink-0">
                     <img src="/photos/logo.png" alt="Mohammad Pharmacy logo" class="w-9 h-9 md:w-10 md:h-10 object-cover">
                 </div>
@@ -142,7 +139,6 @@
             </div>
             
             <div class="flex items-center gap-2 md:gap-8">
-
                 <!-- Language Toggle -->
                 <button id="lang-toggle" class="flex items-center justify-center size-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" aria-label="Switch Language">
                     <span class="material-symbols-outlined text-xl">language</span>
@@ -156,7 +152,7 @@
                     <a class="nav-link text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400" href="#map" data-i18n="nav_location">Location</a>
                 </nav>
 
-                <!-- CTA Button (Desktop) -->
+                <!-- CTA Button -->
                 <a href="#contact" class="hidden md:flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-6 bg-primary hover:bg-blue-800 text-white text-sm font-bold tracking-wide transition-colors shadow-lg shadow-blue-900/20 active:scale-95">
                     <span class="truncate" data-i18n="nav_contact">Contact Us</span>
                 </a>
@@ -168,7 +164,7 @@
             </div>
         </div>
 
-        <!-- Mobile Dropdown Menu -->
+        <!-- Mobile Dropdown -->
         <div id="mobile-menu" class="absolute top-full left-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xl md:hidden z-40">
             <nav class="flex flex-col px-4 py-6 gap-2">
                 <a class="mobile-link block py-3 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-lg transition-colors" href="#top" data-i18n="nav_home">Home</a>
@@ -188,9 +184,10 @@
             <div class="relative flex min-h-[500px] md:min-h-[560px] flex-col gap-6 rounded-2xl md:rounded-[2rem] items-start justify-end px-6 pb-10 md:px-16 md:pb-16 overflow-hidden shadow-sm">
                 <div class="absolute inset-0 z-0">
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/50 to-slate-900/30 z-10"></div>
+                    <!-- Performance Fix: Removed loading="lazy" for the Hero image -->
                     <img src="/photos/hero.webp" 
                         alt="Modern pharmacy interior in Yabroud" 
-                        class="w-full h-full object-cover hero-bg-img" loading="lazy" decoding="async">
+                        class="w-full h-full object-cover hero-bg-img" decoding="async">
                 </div>
 
                 <div class="flex flex-col gap-4 text-left max-w-2xl z-10 ltr:items-start rtl:items-start">
@@ -456,7 +453,7 @@
     <script>
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
-        // --- Translations (English & Arabic) ---
+        // --- Translations ---
         const translations = {
             en: {
                 page_title: "Mohammad Pharmacy | Trusted Care in Yabroud",
@@ -572,43 +569,34 @@
             }
         };
 
-        // --- Language Switcher Logic ---
         const langToggle = document.getElementById('lang-toggle');
         const html = document.documentElement;
         
         function setLanguage(lang) {
-            // Update HTML attributes
             html.setAttribute('lang', lang);
             html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
             
-            // Update Font
+            // Switch font class on HTML element
             if (lang === 'ar') {
-                document.body.classList.remove('font-display');
-                document.body.classList.add('font-arabic');
+                html.classList.remove('font-display');
+                html.classList.add('font-arabic');
             } else {
-                document.body.classList.remove('font-arabic');
-                document.body.classList.add('font-display');
+                html.classList.remove('font-arabic');
+                html.classList.add('font-display');
             }
 
-            // Update Content
             const elements = document.querySelectorAll('[data-i18n]');
             elements.forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (translations[lang][key]) {
-                    el.innerHTML = translations[lang][key]; // innerHTML to handle <br/> tags
-                }
+                if (translations[lang][key]) el.innerHTML = translations[lang][key];
             });
 
-            // Update Placeholders
             const inputs = document.querySelectorAll('[data-placeholder]');
             inputs.forEach(el => {
                 const key = el.getAttribute('data-placeholder');
-                if (translations[lang][key]) {
-                    el.setAttribute('placeholder', translations[lang][key]);
-                }
+                if (translations[lang][key]) el.setAttribute('placeholder', translations[lang][key]);
             });
 
-            // Save Preference
             localStorage.setItem('lang', lang);
         }
 
@@ -617,12 +605,11 @@
             setLanguage(currentLang === 'en' ? 'ar' : 'en');
         });
 
-        // Initialize Language
+        // Initialize language (content update only; attributes handled in head)
         const savedLang = localStorage.getItem('lang') || 'en';
         setLanguage(savedLang);
 
-
-        // --- Existing Mobile Dropdown Logic ---
+        // --- Mobile Menu ---
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         const mobileLinks = document.querySelectorAll('.mobile-link');
@@ -633,11 +620,11 @@
             if (isMenuOpen) {
                 mobileMenu.classList.add('open');
                 menuBtn.querySelector('span').textContent = 'close';
-                document.body.style.overflow = 'hidden'; // Lock scroll
+                document.body.style.overflow = 'hidden';
             } else {
                 mobileMenu.classList.remove('open');
                 menuBtn.querySelector('span').textContent = 'menu';
-                document.body.style.overflow = ''; // Unlock scroll
+                document.body.style.overflow = '';
             }
         }
 
@@ -658,7 +645,7 @@
             });
         });
 
-        // --- Existing Scroll Spy ---
+        // --- Scroll Spy ---
         const observerOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
         const navLinks = document.querySelectorAll('.nav-link');
         const observer = new IntersectionObserver((entries) => {
@@ -667,8 +654,6 @@
                     const id = entry.target.getAttribute('id');
                     navLinks.forEach(link => {
                         link.classList.remove('text-primary', 'dark:text-blue-400');
-                        // Highlight when href matches section id
-                        // Also treat '#top' nav link as corresponding to the 'hero' section
                         if (link.getAttribute('href') === `#${id}` || (link.getAttribute('href') === '#top' && id === 'hero')) {
                             link.classList.add('text-primary', 'dark:text-blue-400');
                         }
@@ -676,17 +661,13 @@
                 }
             });
         }, observerOptions);
-        // Observe all main sections
         document.querySelectorAll('section[id]').forEach(section => observer.observe(section));
 
-        // --- Existing Contact Form ---
+        // --- Contact Form & reCAPTCHA ---
         const form = document.getElementById('contact-form');
         const successMessage = document.getElementById('form-success-message');
-
-        // reCAPTCHA site key
         const RECAPTCHA_SITE_KEY = '6LfrYRUsAAAAAAavLZzwCvEwdAVLHCiiJfbLYbIH';
 
-        // Toggle visible grecaptcha badge only when contact section is in viewport
         (function observeContactBadge() {
             const contactSection = document.getElementById('contact');
             if (!contactSection) return;
@@ -717,7 +698,6 @@
                     error?.classList.add('hidden');
                     input.classList.remove('border-red-500');
                 }
-                
                 input.addEventListener('input', function() {
                     if(this.value.trim()) {
                         this.classList.remove('border-red-500');
@@ -766,17 +746,12 @@
                 grecaptcha.ready(doSubmitWithToken);
             }
         });
-    </script>
-    
-    <!-- Trigger page-load animation -->
-    <script>
+
+        // Page Load Animation
         window.addEventListener('load', function() {
-            // Use RAF to ensure paint has occurred
             requestAnimationFrame(function() { document.body.classList.add('loaded'); });
         });
     </script>
-
-    <!-- Cloudflare Web Analytics -->
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ddbfdfa6ae0740e284570a1bb50c9472"}'></script>
 </body>
 </html>
