@@ -1,87 +1,76 @@
 <!DOCTYPE html>
-<html class="light scroll-smooth" lang="en" dir="ltr">
+<html class="scroll-smooth" lang="en" dir="ltr">
 <head>
     <meta charset="utf-8"/>
-    <!-- Viewport Fix: Allow user scaling for Accessibility -->
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    
-    <!-- SEO Meta Tags -->
+
+    <!-- SEO -->
     <title data-i18n="page_title">Mohammad Pharmacy | Trusted Care in Yabroud</title>
     <meta name="description" content="Mohammad Pharmacy in Yabroud offers professional health services, prescriptions, and expert medical advice. Open daily until 1 AM.">
-    
+
     <!-- Open Graph -->
     <meta property="og:type" content="business.business">
     <meta property="og:title" content="Mohammad Pharmacy | Yabroud">
     <meta property="og:image" content="https://images.unsplash.com/photo-1631549916768-4119b295f926?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
-    
+
     <!-- Favicon -->
     <link rel="icon" href="/photos/favicon.png">
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800&family=Manrope:wght@400;500;700;800&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700;800&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    
+
     <!-- Production CSS -->
     <link href="styles.css" rel="stylesheet">
 
-    <!-- Anti-FOUC (Flash of Unstyled Content) Language Logic -->
+    <!-- Anti-FOUC: Language + Theme (must run before paint) -->
     <script>
-        (function() {
-            const savedLang = localStorage.getItem('lang') || 'en';
-            const html = document.documentElement;
-            html.setAttribute('lang', savedLang);
-            html.setAttribute('dir', savedLang === 'ar' ? 'rtl' : 'ltr');
-            
-            // Apply font class immediately to HTML tag
-            if (savedLang === 'ar') {
-                html.classList.add('font-arabic');
-                html.classList.remove('font-display');
-            } else {
-                html.classList.add('font-display');
-                html.classList.remove('font-arabic');
-            }
+        (function () {
+            var html = document.documentElement;
+            var lang = localStorage.getItem('lang') || 'en';
+            html.setAttribute('lang', lang);
+            html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            html.classList.add(lang === 'ar' ? 'font-arabic' : 'font-display');
+
+            var theme = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (theme === 'dark' || (!theme && prefersDark)) html.classList.add('dark');
         })();
     </script>
-    
+
     <style>
-        /* Header & Menu Logic */
+        /* ── Mobile Menu ─────────────────────────────────── */
         #mobile-menu {
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
             transform-origin: top;
             transform: scaleY(0);
             opacity: 0;
         }
-        #mobile-menu.open {
-            transform: scaleY(1);
-            opacity: 1;
-        }
-        
-        .aspect-video { aspect-ratio: 16 / 9; }
-        html { scroll-padding-top: 100px; }
+        #mobile-menu.open { transform: scaleY(1); opacity: 1; }
 
-        /* RTL Specifics */
+        .aspect-video { aspect-ratio: 16 / 9; }
+        html { scroll-padding-top: 88px; }
+
+        /* ── RTL Specifics ───────────────────────────────── */
         [dir="rtl"] .material-symbols-outlined.flip-rtl { transform: scaleX(-1); }
         html[dir="rtl"] .hero-break { display: none !important; }
         html[dir="rtl"] [data-i18n="days_week"],
         html[dir="rtl"] [data-i18n="day_friday"] {
             font-size: 1.1rem !important;
             font-weight: 800 !important;
-            letter-spacing: 0.005em;
         }
 
-        /* Email Dynamic Sizing */
+        /* ── Dynamic Email ───────────────────────────────── */
         .no-wrap-dynamic-email {
             white-space: normal;
             display: inline-block;
             font-size: clamp(0.95rem, 1.5vw, 1.125rem) !important;
         }
-        @media (min-width: 768px) {
-            .no-wrap-dynamic-email { white-space: nowrap; }
-        }
+        @media (min-width: 768px) { .no-wrap-dynamic-email { white-space: nowrap; } }
 
-        /* Hero Underline */
+        /* ── Hero Underline ──────────────────────────────── */
         .hero-desc { position: relative; padding-bottom: 0.9rem; }
         .hero-desc::after {
             content: "";
@@ -92,73 +81,152 @@
             left: 0;
             background: rgba(59,130,246,0.9);
             border-radius: 999px;
-            transform-origin: left center;
         }
         html[dir="rtl"] .hero-desc { text-align: right !important; }
-        html[dir="rtl"] .hero-desc::after { left: auto; right: 0; transform-origin: right center; }
+        html[dir="rtl"] .hero-desc::after { left: auto; right: 0; }
 
-        /* Animations */
+        /* ── Page Load Fade-in ───────────────────────────── */
         .fade-in { opacity: 0; transform: translateY(10px); transition: opacity 640ms cubic-bezier(.2,.9,.2,1), transform 640ms cubic-bezier(.2,.9,.2,1); }
         body.loaded .fade-in { opacity: 1; transform: none; }
         body.loaded .fade-in--h { transition-delay: 0s; }
         body.loaded .fade-in--m { transition-delay: 0.08s; }
         body.loaded .fade-in--f { transition-delay: 0.16s; }
 
-        .hero-bg-img {
-            object-position: center 18%;
-            transition: transform 600ms cubic-bezier(.2,.9,.2,1);
+        /* ── Scroll Reveal ───────────────────────────────── */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.65s cubic-bezier(0.2, 0.9, 0.2, 1), transform 0.65s cubic-bezier(0.2, 0.9, 0.2, 1);
+        }
+        .scroll-reveal.is-visible { opacity: 1; transform: none; }
+        .scroll-reveal.delay-1 { transition-delay: 0.1s; }
+        .scroll-reveal.delay-2 { transition-delay: 0.2s; }
+        .scroll-reveal.delay-3 { transition-delay: 0.3s; }
+        @media (prefers-reduced-motion: reduce) {
+            .scroll-reveal { opacity: 1; transform: none; transition: none; }
         }
 
-        /* --- FIXED RECAPTCHA STYLES --- */
-        /* Do NOT use display:none, it prevents Google from calculating dimensions */
-        .grecaptcha-badge { 
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 50;
+        /* ── Scroll Progress Bar ─────────────────────────── */
+        #scroll-progress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px;
+            background: linear-gradient(to right, #1e3a8a, #3b82f6, #0ea5e9);
+            width: 0%;
+            z-index: 200;
+            pointer-events: none;
+            will-change: width;
         }
-        /* Reveal when class is added */
-        body.show-recaptcha-badge .grecaptcha-badge { 
-            visibility: visible !important;
-            opacity: 1 !important;
+
+        /* ── Header Shrink ───────────────────────────────── */
+        #main-header { transition: box-shadow 0.3s ease; }
+        #main-header.scrolled { box-shadow: 0 4px 24px -4px rgba(15,23,42,0.14); }
+        .header-inner { transition: padding-top 0.3s cubic-bezier(0.4,0,0.2,1), padding-bottom 0.3s cubic-bezier(0.4,0,0.2,1); }
+        #main-header.scrolled .header-inner { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+
+        /* ── Ken Burns (respects prefers-reduced-motion) ─── */
+        @media (prefers-reduced-motion: no-preference) {
+            .hero-bg-img { animation: hero-ken-burns 20s ease-in-out infinite alternate; }
         }
+        @keyframes hero-ken-burns {
+            0%   { transform: scale(1.0) translateX(0); }
+            100% { transform: scale(1.07) translateX(-1%); }
+        }
+        .hero-bg-img { transition: transform 600ms cubic-bezier(.2,.9,.2,1); object-position: center 18%; }
+
+        /* ── Nav Active State ────────────────────────────── */
+        .nav-link { position: relative; padding-bottom: 2px; }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -3px; left: 0; right: 0;
+            height: 2px;
+            background: currentColor;
+            border-radius: 2px;
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+        [dir="rtl"] .nav-link::after { transform-origin: right center; }
+        .nav-link.is-active::after { transform: scaleX(1); }
+        .nav-link.is-active { color: rgb(30 58 138); }
+        .dark .nav-link.is-active { color: rgb(96 165 250); }
+
+        /* ── Card Hover Lift ─────────────────────────────── */
+        .card-lift { transition: transform 0.25s cubic-bezier(0.2,0.9,0.2,1), box-shadow 0.25s cubic-bezier(0.2,0.9,0.2,1), border-color 0.25s ease; }
+        .card-lift:hover { transform: translateY(-5px); }
+
+        /* ── Open/Closed Status Pill ─────────────────────── */
+        /* Pill always sits on the dark-blue bg-primary card — use light, high-contrast colours */
+        .status-pill-open   { background: rgba(74,222,128,0.18); color: #86efac; border: 1px solid rgba(74,222,128,0.45); }
+        .status-pill-closed { background: rgba(248,113,113,0.18); color: #fca5a5; border: 1px solid rgba(248,113,113,0.45); }
+
+        @keyframes status-dot-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.55; transform: scale(0.8); }
+        }
+        .status-dot-open { animation: status-dot-pulse 2.2s ease-in-out infinite; }
+
+        /* ── Floating WhatsApp Button ─────────────────────── */
+        #fab { opacity: 0; }
+        #fab.fab-visible { opacity: 1; animation: fab-enter 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+        @keyframes fab-enter {
+            from { opacity: 0; transform: translateY(18px) scale(0.8); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            #fab.fab-visible { animation: none; opacity: 1; }
+        }
+
+        /* ── reCAPTCHA badge — permanently hidden per Google TOS allowance;
+              disclosure text is shown inline near the form instead ───── */
+        .grecaptcha-badge { visibility: hidden !important; }
     </style>
 </head>
 
 <body id="top" class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white antialiased selection:bg-primary/20 pt-20 overflow-x-hidden">
 
-    <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md shadow-sm fade-in fade-in--h">
-        <div class="px-4 md:px-10 py-3 flex items-center justify-between max-w-[1440px] mx-auto relative z-50 bg-inherit">
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress" aria-hidden="true"></div>
+
+    <!-- ─── Header ─────────────────────────────────────────── -->
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md fade-in fade-in--h">
+        <div class="header-inner px-4 md:px-10 py-3 flex items-center justify-between max-w-[1440px] mx-auto relative z-50 bg-inherit">
+
             <!-- Logo -->
-            <div class="flex items-center gap-3 md:gap-4 cursor-pointer" onclick="window.location.href='#top'">
-                <div class="flex items-center justify-center size-9 md:size-10 bg-white/0 shrink-0">
-                    <img src="/photos/logo.png" alt="Mohammad Pharmacy logo" class="w-9 h-9 md:w-10 md:h-10 object-cover">
-                </div>
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='#top'" role="link" aria-label="Back to top">
+                <img src="/photos/logo.png" alt="Mohammad Pharmacy logo" class="w-9 h-9 md:w-10 md:h-10 object-cover shrink-0">
                 <h1 class="text-slate-900 dark:text-white text-base md:text-lg font-bold leading-tight tracking-tight" data-i18n="brand_name">Mohammad Pharmacy</h1>
             </div>
-            
-            <div class="flex items-center gap-2 md:gap-8">
+
+            <div class="flex items-center gap-2 md:gap-5">
+
                 <!-- Language Toggle -->
-                <button id="lang-toggle" class="flex items-center justify-center size-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" aria-label="Switch Language">
-                    <span class="material-symbols-outlined text-xl">language</span>
+                <button id="lang-toggle" class="flex items-center justify-center size-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer font-bold text-sm tracking-wide" aria-label="Switch language">
+                    <span id="lang-label">EN</span>
+                </button>
+
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="flex items-center justify-center size-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer" aria-label="Toggle dark mode">
+                    <span id="theme-icon" class="material-symbols-outlined text-xl">light_mode</span>
                 </button>
 
                 <!-- Desktop Nav -->
-                <nav class="hidden md:flex items-center gap-9" id="nav-links">
-                    <a class="nav-link text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400" href="#top" data-i18n="nav_home">Home</a>
-                    <a class="nav-link text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400" href="#services" data-i18n="nav_services">Services</a>
-                    <a class="nav-link text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400" href="#about" data-i18n="nav_about">About</a>
-                    <a class="nav-link text-sm font-medium transition-colors hover:text-primary dark:hover:text-blue-400" href="#map" data-i18n="nav_location">Location</a>
+                <nav class="hidden md:flex items-center gap-8" id="nav-links" aria-label="Main navigation">
+                    <a class="nav-link text-sm font-semibold text-slate-600 dark:text-slate-300 transition-colors hover:text-primary dark:hover:text-blue-400" href="#top" data-i18n="nav_home">Home</a>
+                    <a class="nav-link text-sm font-semibold text-slate-600 dark:text-slate-300 transition-colors hover:text-primary dark:hover:text-blue-400" href="#services" data-i18n="nav_services">Services</a>
+                    <a class="nav-link text-sm font-semibold text-slate-600 dark:text-slate-300 transition-colors hover:text-primary dark:hover:text-blue-400" href="#about" data-i18n="nav_about">About</a>
+                    <a class="nav-link text-sm font-semibold text-slate-600 dark:text-slate-300 transition-colors hover:text-primary dark:hover:text-blue-400" href="#map" data-i18n="nav_location">Location</a>
                 </nav>
 
-                <!-- CTA Button -->
-                <a href="#contact" class="hidden md:flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-6 bg-primary hover:bg-blue-800 text-white text-sm font-bold tracking-wide transition-colors shadow-lg shadow-blue-900/20 active:scale-95">
+                <!-- CTA -->
+                <a href="#contact" class="hidden md:flex cursor-pointer items-center justify-center gap-2 rounded-xl h-10 px-5 bg-primary hover:bg-primary-hover text-white text-sm font-bold transition-all shadow-brand hover:-translate-y-0.5 hover:shadow-brand-lg active:scale-95">
+                    <span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1">mail</span>
                     <span class="truncate" data-i18n="nav_contact">Contact Us</span>
                 </a>
 
-                <!-- Mobile Menu Button -->
-                <button id="menu-btn" class="md:hidden text-slate-900 dark:text-white p-2 focus:outline-none rounded-lg active:bg-slate-100 dark:active:bg-slate-800" aria-label="Toggle Menu">
+                <!-- Mobile Hamburger -->
+                <button id="menu-btn" class="md:hidden text-slate-900 dark:text-white p-2 rounded-lg active:bg-slate-100 dark:active:bg-slate-800 cursor-pointer" aria-label="Toggle menu" aria-expanded="false">
                     <span class="material-symbols-outlined text-3xl">menu</span>
                 </button>
             </div>
@@ -166,143 +234,211 @@
 
         <!-- Mobile Dropdown -->
         <div id="mobile-menu" class="absolute top-full left-0 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xl md:hidden z-40">
-            <nav class="flex flex-col px-4 py-6 gap-2">
-                <a class="mobile-link block py-3 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-lg transition-colors" href="#top" data-i18n="nav_home">Home</a>
-                <a class="mobile-link block py-3 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-lg transition-colors" href="#services" data-i18n="nav_services">Services</a>
-                <a class="mobile-link block py-3 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-lg transition-colors" href="#about" data-i18n="nav_about">About</a>
-                <a class="mobile-link block py-3 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-lg transition-colors" href="#map" data-i18n="nav_location">Location</a>
-                <div class="pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
-                    <a href="#contact" class="mobile-link flex items-center justify-center w-full bg-primary text-white py-4 rounded-xl font-bold text-lg shadow-md" data-i18n="nav_contact">Contact Us</a>
+            <nav class="flex flex-col px-4 py-5 gap-1" aria-label="Mobile navigation">
+                <a class="mobile-link block py-3 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-lg transition-colors cursor-pointer" href="#top" data-i18n="nav_home">Home</a>
+                <a class="mobile-link block py-3 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-lg transition-colors cursor-pointer" href="#services" data-i18n="nav_services">Services</a>
+                <a class="mobile-link block py-3 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-lg transition-colors cursor-pointer" href="#about" data-i18n="nav_about">About</a>
+                <a class="mobile-link block py-3 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-lg transition-colors cursor-pointer" href="#map" data-i18n="nav_location">Location</a>
+                <div class="pt-3 mt-1 border-t border-slate-100 dark:border-slate-800">
+                    <a href="#contact" class="mobile-link flex items-center justify-center gap-2 w-full bg-primary text-white py-4 rounded-xl font-bold text-base shadow-brand cursor-pointer" data-i18n="nav_contact">Contact Us</a>
                 </div>
             </nav>
         </div>
     </header>
 
     <main class="fade-in fade-in--m">
-        <!-- Hero Section -->
+
+        <!-- ─── Hero ──────────────────────────────────────── -->
         <section id="hero" class="w-full max-w-[1440px] mx-auto px-4 md:px-10 py-4 md:py-6">
-            <div class="relative flex min-h-[500px] md:min-h-[560px] flex-col gap-6 rounded-2xl md:rounded-[2rem] items-start justify-end px-6 pb-10 md:px-16 md:pb-16 overflow-hidden shadow-sm">
-                <div class="absolute inset-0 z-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/50 to-slate-900/30 z-10"></div>
-                    <!-- Performance Fix: Removed loading="lazy" for the Hero image -->
-                    <img src="/photos/hero.webp" 
-                        alt="Modern pharmacy interior in Yabroud" 
-                        class="w-full h-full object-cover hero-bg-img" decoding="async">
+            <div class="relative flex min-h-[520px] md:min-h-[600px] flex-col gap-6 rounded-2xl md:rounded-[2rem] items-start justify-end px-6 pb-10 md:px-16 md:pb-16 overflow-hidden shadow-xl">
+
+                <!-- Background -->
+                <div class="absolute inset-0 z-0 overflow-hidden rounded-2xl md:rounded-[2rem]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/55 to-slate-900/20 z-10"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-primary/50 via-primary/10 to-transparent z-10"></div>
+                    <img src="/photos/hero.webp"
+                        alt="Modern pharmacy interior in Yabroud"
+                        class="w-full h-full object-cover hero-bg-img"
+                        decoding="async">
                 </div>
 
-                <div class="flex flex-col gap-4 text-left max-w-2xl z-10 ltr:items-start rtl:items-start">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/60 backdrop-blur-md text-blue-50 text-xs font-bold uppercase tracking-wider w-fit border border-blue-200/20">
-                        <span class="material-symbols-outlined text-sm">verified</span> <span data-i18n="hero_badge">Trusted Care</span>
+                <!-- Content -->
+                <div class="flex flex-col gap-5 max-w-2xl z-10 ltr:items-start rtl:items-start">
+
+                    <!-- Badge -->
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-900/60 backdrop-blur-md text-blue-50 text-xs font-bold uppercase tracking-wider w-fit border border-blue-200/20">
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">verified</span>
+                        <span data-i18n="hero_badge">Trusted Care</span>
                     </span>
+
+                    <!-- Headline -->
                     <h2 class="text-white text-4xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight">
-                        <span data-i18n="hero_title_1">Your Health,</span><br class="hero-break"/><span data-i18n="hero_title_2">Our Priority.</span>
+                        <span data-i18n="hero_title_1">Your Health,</span><br class="hero-break"/>
+                        <span data-i18n="hero_title_2">Our Priority.</span>
                     </h2>
+
+                    <!-- Description -->
                     <p class="hero-desc text-blue-100 text-base md:text-lg font-normal leading-relaxed max-w-lg" data-i18n="hero_desc">
                         Your trusted, modern pharmacy in the heart of Yabroud. Professional services, expert advice, and care you can rely on.
                     </p>
+
+                    <!-- Trust chips -->
+                    <div class="flex flex-wrap gap-2">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-white/90 text-xs font-medium">
+                            <span class="material-symbols-outlined text-xs" style="font-variation-settings:'FILL' 1">schedule</span>
+                            <span data-i18n="chip_hours">Open till 1 AM</span>
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-white/90 text-xs font-medium">
+                            <span class="material-symbols-outlined text-xs" style="font-variation-settings:'FILL' 1">school</span>
+                            <span data-i18n="chip_edu">Damascus University</span>
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-white/90 text-xs font-medium">
+                            <span class="material-symbols-outlined text-xs" style="font-variation-settings:'FILL' 1">location_on</span>
+                            <span data-i18n="chip_location">Yabroud, Syria</span>
+                        </span>
+                    </div>
                 </div>
-                
-                <div class="flex flex-col sm:flex-row gap-4 z-10 w-full sm:w-auto">
-                    <a href="#contact" class="flex items-center justify-center rounded-xl h-14 sm:h-12 px-8 bg-primary hover:bg-blue-800 text-white text-base font-bold transition-all shadow-lg shadow-blue-900/20 active:scale-95" data-i18n="hero_cta_contact">
-                        Contact Us
+
+                <!-- CTAs -->
+                <div class="flex flex-col sm:flex-row gap-3 z-10 w-full sm:w-auto">
+                    <a href="#contact" class="flex items-center justify-center gap-2 rounded-xl h-14 sm:h-12 px-8 bg-primary hover:bg-primary-hover text-white text-base font-bold transition-all shadow-brand hover:-translate-y-0.5 hover:shadow-brand-lg active:scale-95 cursor-pointer">
+                        <span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1">mail</span>
+                        <span data-i18n="hero_cta_contact">Contact Us</span>
                     </a>
-                    <a href="#map" class="flex items-center justify-center rounded-xl h-14 sm:h-12 px-8 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white text-base font-bold transition-all active:scale-95" data-i18n="hero_cta_visit">
-                        Visit Us
+                    <a href="#map" class="flex items-center justify-center gap-2 rounded-xl h-14 sm:h-12 px-8 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white text-base font-bold transition-all hover:-translate-y-0.5 active:scale-95 cursor-pointer">
+                        <span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1">location_on</span>
+                        <span data-i18n="hero_cta_visit">Visit Us</span>
                     </a>
                 </div>
             </div>
         </section>
 
-        <!-- Services Section -->
-        <section id="services" class="w-full max-w-[1440px] mx-auto px-4 md:px-10 py-12 md:py-16">
-            <div class="flex flex-col gap-8 md:gap-10">
-                <div class="flex flex-col gap-3 max-w-[720px]">
+        <!-- ─── Services ──────────────────────────────────── -->
+        <section id="services" class="w-full max-w-[1440px] mx-auto px-4 md:px-10 py-14 md:py-20">
+            <div class="flex flex-col gap-10 md:gap-12">
+
+                <!-- Heading -->
+                <div class="flex flex-col gap-3 max-w-[720px] scroll-reveal">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 dark:bg-blue-500/10 text-primary dark:text-blue-400 text-xs font-bold uppercase tracking-wider w-fit border border-primary/20 dark:border-blue-500/20">
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">health_and_safety</span>
+                        <span data-i18n="services_eyebrow">What We Offer</span>
+                    </div>
                     <h2 class="text-slate-900 dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight" data-i18n="services_title">
                         Holistic Health Services
                     </h2>
-                    <p class="text-slate-600 dark:text-gray-400 text-base md:text-lg font-normal leading-relaxed" data-i18n="services_desc">
+                    <p class="text-slate-500 dark:text-slate-400 text-base md:text-lg leading-relaxed" data-i18n="services_desc">
                         Beyond just filling prescriptions, we offer a range of services designed for your complete well-being.
                     </p>
                 </div>
 
+                <!-- Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Service 1 -->
-                    <article class="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-slate-850 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 border border-slate-100 dark:border-slate-800 hover:border-blue-100 dark:hover:border-blue-900/50">
-                        <div class="w-full aspect-video rounded-xl overflow-hidden relative bg-slate-100">
-                               <img src="/photos/persc.webp" 
-                                   alt="Prescriptions" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+
+                    <!-- Prescriptions -->
+                    <article class="group card-lift flex flex-col rounded-2xl bg-white dark:bg-slate-850 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900/60 shadow-card hover:shadow-card-hover overflow-hidden scroll-reveal delay-1 cursor-default">
+                        <div class="w-full aspect-video overflow-hidden relative bg-slate-100 dark:bg-slate-800">
+                            <img src="/photos/persc.webp" alt="Prescription service" loading="lazy"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
-                        <div class="flex flex-col gap-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="material-symbols-outlined text-primary">medication</span>
+                        <div class="flex flex-col gap-2 p-5">
+                            <div class="flex items-center gap-3 mb-1">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 shrink-0 group-hover:bg-primary transition-colors duration-300">
+                                    <span class="material-symbols-outlined text-primary dark:text-blue-400 text-xl group-hover:text-white transition-colors duration-300" style="font-variation-settings:'FILL' 1">medication</span>
+                                </div>
                                 <h3 class="text-slate-900 dark:text-white text-lg font-bold" data-i18n="service_1_title">Prescriptions</h3>
                             </div>
-                            <p class="text-slate-500 dark:text-gray-400 text-sm leading-relaxed" data-i18n="service_1_desc">Fast and accurate prescription filling for all your medical needs.</p>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed" data-i18n="service_1_desc">Fast and accurate prescription filling for all your medical needs.</p>
                         </div>
                     </article>
-                    
-                    <!-- Service 2 -->
-                    <article class="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-slate-850 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 border border-slate-100 dark:border-slate-800 hover:border-blue-100 dark:hover:border-blue-900/50">
-                        <div class="w-full aspect-video rounded-xl overflow-hidden relative bg-slate-100">
-                               <img src="/photos/advice.webp" 
-                                   alt="Medical Advice" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+
+                    <!-- Medical Advice -->
+                    <article class="group card-lift flex flex-col rounded-2xl bg-white dark:bg-slate-850 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900/60 shadow-card hover:shadow-card-hover overflow-hidden scroll-reveal delay-2 cursor-default">
+                        <div class="w-full aspect-video overflow-hidden relative bg-slate-100 dark:bg-slate-800">
+                            <img src="/photos/advice.webp" alt="Medical advice consultation" loading="lazy"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
-                        <div class="flex flex-col gap-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="material-symbols-outlined text-primary">clinical_notes</span>
+                        <div class="flex flex-col gap-2 p-5">
+                            <div class="flex items-center gap-3 mb-1">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 shrink-0 group-hover:bg-primary transition-colors duration-300">
+                                    <span class="material-symbols-outlined text-primary dark:text-blue-400 text-xl group-hover:text-white transition-colors duration-300" style="font-variation-settings:'FILL' 1">clinical_notes</span>
+                                </div>
                                 <h3 class="text-slate-900 dark:text-white text-lg font-bold" data-i18n="service_2_title">Medical Advice</h3>
                             </div>
-                            <p class="text-slate-500 dark:text-gray-400 text-sm leading-relaxed" data-i18n="service_2_desc">Professional consultation with our expert staff to discuss your health goals.</p>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed" data-i18n="service_2_desc">Professional consultation with our expert staff to discuss your health goals.</p>
                         </div>
                     </article>
 
-                    <!-- Service 3 -->
-                    <article class="group flex flex-col gap-4 p-4 rounded-2xl bg-white dark:bg-slate-850 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 border border-slate-100 dark:border-slate-800 hover:border-blue-100 dark:hover:border-blue-900/50">
-                        <div class="w-full aspect-video rounded-xl overflow-hidden relative bg-slate-100">
-                               <img src="/photos/wellbeing.webp" 
-                                   alt="Wellness Products" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <!-- Wellness Products -->
+                    <article class="group card-lift flex flex-col rounded-2xl bg-white dark:bg-slate-850 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-900/60 shadow-card hover:shadow-card-hover overflow-hidden scroll-reveal delay-3 cursor-default">
+                        <div class="w-full aspect-video overflow-hidden relative bg-slate-100 dark:bg-slate-800">
+                            <img src="/photos/wellbeing.webp" alt="Wellness products" loading="lazy"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
-                        <div class="flex flex-col gap-1">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="material-symbols-outlined text-primary">eco</span>
+                        <div class="flex flex-col gap-2 p-5">
+                            <div class="flex items-center gap-3 mb-1">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 shrink-0 group-hover:bg-primary transition-colors duration-300">
+                                    <span class="material-symbols-outlined text-primary dark:text-blue-400 text-xl group-hover:text-white transition-colors duration-300" style="font-variation-settings:'FILL' 1">eco</span>
+                                </div>
                                 <h3 class="text-slate-900 dark:text-white text-lg font-bold" data-i18n="service_3_title">Wellness Products</h3>
                             </div>
-                            <p class="text-slate-500 dark:text-gray-400 text-sm leading-relaxed" data-i18n="service_3_desc">A wide range of health and wellness items to support your holistic lifestyle.</p>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed" data-i18n="service_3_desc">A wide range of health and wellness items to support your holistic lifestyle.</p>
                         </div>
                     </article>
                 </div>
             </div>
         </section>
 
-        <!-- About Section -->
-        <section id="about" class="w-full bg-white dark:bg-slate-900/50 py-12 md:py-16">
+        <!-- ─── About ──────────────────────────────────────── -->
+        <section id="about" class="w-full bg-gradient-to-b from-white to-slate-50 dark:from-slate-900/40 dark:to-slate-900/70 py-14 md:py-20">
             <div class="max-w-[1440px] mx-auto px-4 md:px-10">
-                <h2 class="text-slate-900 dark:text-white text-2xl font-bold mb-8 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary">badge</span> <span data-i18n="about_title">Meet Your Pharmacist</span>
-                </h2>
-                <div class="bg-blue-50 dark:bg-slate-800 rounded-3xl p-6 md:p-10 flex flex-col md:flex-row gap-8 items-center">
+
+                <!-- Section heading -->
+                <div class="flex flex-col gap-2 mb-10 scroll-reveal">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 dark:bg-blue-500/10 text-primary dark:text-blue-400 text-xs font-bold uppercase tracking-wider w-fit border border-primary/20 dark:border-blue-500/20">
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">badge</span>
+                        <span data-i18n="about_eyebrow">Our Team</span>
+                    </div>
+                    <h2 class="text-slate-900 dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight" data-i18n="about_title">Meet Your Pharmacist</h2>
+                </div>
+
+                <!-- Card -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 md:p-10 flex flex-col md:flex-row gap-8 md:gap-12 items-center shadow-card border border-slate-100 dark:border-slate-700 scroll-reveal">
+
+                    <!-- Photo -->
                     <div class="shrink-0 relative">
-                            <img src="/photos/drdurbaa.webp" 
-                                alt="Portrait of Dr. Mohammad Deeb Durbaa, Head Pharmacist"
-                                class="w-40 h-40 md:w-56 md:h-56 rounded-2xl object-cover shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-500">
-                        <div class="absolute -bottom-4 -right-4 rtl:right-auto rtl:-left-4 bg-white dark:bg-slate-700 p-2 rounded-lg shadow-md">
-                            <span class="material-symbols-outlined text-primary text-3xl">verified_user</span>
+                        <img src="/photos/drdurbaa.webp"
+                            alt="Portrait of Dr. Mohammad Deeb Durbaa, Head Pharmacist"
+                            class="w-44 h-44 md:w-60 md:h-60 rounded-2xl object-cover shadow-xl transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                        <div class="absolute -bottom-4 ltr:-right-4 rtl:-left-4 bg-white dark:bg-slate-700 p-2.5 rounded-xl shadow-lg border border-slate-100 dark:border-slate-600">
+                            <span class="material-symbols-outlined text-primary dark:text-blue-400 text-3xl" style="font-variation-settings:'FILL' 1">verified_user</span>
                         </div>
                     </div>
-                    <div class="flex flex-col gap-4 text-center md:text-left rtl:md:text-right">
+
+                    <!-- Bio -->
+                    <div class="flex flex-col gap-5 text-center md:text-left rtl:md:text-right mt-4 md:mt-0">
                         <div>
-                            <h3 class="text-slate-900 dark:text-white text-3xl font-bold tracking-tight" data-i18n="pharmacist_name">Dr. Mohammad Deeb Durbaa</h3>
-                            <p class="text-primary font-bold text-sm uppercase tracking-wider mt-1" data-i18n="pharmacist_role">Lead Pharmacist & Owner</p>
+                            <h3 class="text-slate-900 dark:text-white text-2xl md:text-3xl font-black tracking-tight" data-i18n="pharmacist_name">Dr. Mohammad Deeb Durbaa</h3>
+                            <p class="text-primary dark:text-blue-400 font-bold text-sm uppercase tracking-wider mt-1.5" data-i18n="pharmacist_role">Lead Pharmacist & Owner</p>
                         </div>
-                        <p class="text-slate-600 dark:text-gray-300 text-lg leading-relaxed max-w-2xl" data-i18n="pharmacist_quote">
-                            "Serving the Yabroud community with dedication and professional care. At Mohammad Pharmacy, we believe in providing more than just medication—we provide personalized health solutions."
-                        </p>
-                        <div class="flex flex-wrap gap-4 justify-center md:justify-start rtl:md:justify-start mt-2">
-                            <div class="flex items-center gap-1 text-sm font-medium text-slate-500 dark:text-gray-400">
-                                <span class="material-symbols-outlined text-base">school</span> <span data-i18n="pharmacist_badge_1">Damascus University Graduate</span>
+
+                        <blockquote class="relative">
+                            <span class="absolute -top-2 ltr:-left-1 rtl:-right-1 text-5xl text-primary/20 dark:text-blue-400/20 font-black leading-none select-none" aria-hidden="true">"</span>
+                            <p class="text-slate-600 dark:text-slate-300 text-base md:text-lg leading-relaxed ltr:pl-4 rtl:pr-4" data-i18n="pharmacist_quote">
+                                Serving the Yabroud community with dedication and professional care. At Mohammad Pharmacy, we believe in providing more than just medication—we provide personalized health solutions.
+                            </p>
+                        </blockquote>
+
+                        <div class="flex flex-wrap gap-3 justify-center md:justify-start rtl:md:justify-start">
+                            <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                                <span class="material-symbols-outlined text-base text-primary dark:text-blue-400" style="font-variation-settings:'FILL' 1">school</span>
+                                <span data-i18n="pharmacist_badge_1">Damascus University Graduate</span>
                             </div>
-                            <div class="flex items-center gap-1 text-sm font-medium text-slate-500 dark:text-gray-400">
-                                <span class="material-symbols-outlined text-base">diversity_1</span> <span data-i18n="pharmacist_badge_2">Community Leader</span>
+                            <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                                <span class="material-symbols-outlined text-base text-primary dark:text-blue-400" style="font-variation-settings:'FILL' 1">diversity_1</span>
+                                <span data-i18n="pharmacist_badge_2">Community Leader</span>
                             </div>
                         </div>
                     </div>
@@ -310,122 +446,181 @@
             </div>
         </section>
 
-        <!-- Map & Hours -->
-        <section id="map" class="w-full py-12 md:py-16 px-4 md:px-10 max-w-[1440px] mx-auto flex flex-col gap-8">
+        <!-- ─── Map & Hours ────────────────────────────────── -->
+        <section id="map" class="w-full py-14 md:py-20 px-4 md:px-10 max-w-[1440px] mx-auto">
+
+            <!-- Section heading -->
+            <div class="flex flex-col gap-2 mb-10 scroll-reveal">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 dark:bg-blue-500/10 text-primary dark:text-blue-400 text-xs font-bold uppercase tracking-wider w-fit border border-primary/20 dark:border-blue-500/20">
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">location_on</span>
+                    <span data-i18n="map_eyebrow">Find Us</span>
+                </div>
+                <h2 class="text-slate-900 dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight" data-i18n="map_title">Location & Hours</h2>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Map -->
-                <div class="lg:col-span-2 relative min-h-[350px] md:h-auto rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700">
-                    <iframe src="https://maps.google.com/maps?q=33.97174693862937,36.667403204692704&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-                            class="w-full h-full border-0 absolute inset-0" 
-                            allowfullscreen="" 
-                            loading="lazy" 
+                <div class="lg:col-span-2 relative min-h-[350px] md:min-h-[420px] lg:h-auto rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 scroll-reveal">
+                    <iframe src="https://maps.google.com/maps?q=33.9717183,36.6673838&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                            class="w-full h-full border-0 absolute inset-0"
+                            allowfullscreen=""
+                            loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"
                             title="Mohammad Pharmacy Location Map">
                     </iframe>
                 </div>
-                
+
                 <!-- Hours Card -->
-                <div class="bg-primary text-white rounded-3xl p-8 lg:p-10 flex flex-col justify-center relative overflow-hidden shadow-xl">
-                    <div class="absolute top-0 right-0 p-16 -mr-8 -mt-8 rtl:-mr-8 rtl:-mt-8 bg-white/5 rounded-full blur-3xl"></div>
-                    <div class="absolute bottom-0 left-0 p-12 -ml-6 -mb-6 rtl:-ml-6 rtl:-mb-6 bg-blue-500/20 rounded-full blur-2xl"></div>
+                <div class="bg-primary text-white rounded-3xl p-8 lg:p-10 flex flex-col justify-center relative overflow-hidden shadow-brand-lg scroll-reveal delay-1">
+                    <div class="absolute top-0 right-0 w-40 h-40 -mr-10 -mt-10 bg-white/5 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="absolute bottom-0 left-0 w-32 h-32 -ml-8 -mb-8 bg-blue-400/20 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
+
+                    <!-- Live Open/Closed Status -->
+                    <div id="open-status" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold w-fit mb-6 relative z-10" aria-live="polite">
+                        <span id="open-dot" class="w-2 h-2 rounded-full bg-current shrink-0"></span>
+                        <span id="open-text">—</span>
+                    </div>
+
                     <h3 class="text-2xl font-bold mb-8 flex items-center gap-3 relative z-10">
-                        <span class="material-symbols-outlined text-3xl">schedule</span> <span data-i18n="hours_title">Working Hours</span>
+                        <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1">schedule</span>
+                        <span data-i18n="hours_title">Working Hours</span>
                     </h3>
-                    <div class="space-y-5 relative z-10">
-                        <div class="flex justify-between items-center border-b border-white/10 pb-3">
-                            <span class="font-medium text-blue-100 text-sm uppercase tracking-wide" data-i18n="days_week">Sat - Thu</span>
-                            <span class="font-bold text-lg dir-ltr" data-i18n="hours_open">8:30AM - 1AM</span>
+
+                    <div class="space-y-4 relative z-10">
+                        <div class="flex justify-between items-center border-b border-white/15 pb-4">
+                            <span class="font-semibold text-blue-100 text-sm" data-i18n="days_week">Sat – Thu</span>
+                            <span class="font-black text-lg tabular-nums" data-i18n="hours_open">8:30 AM – 1 AM</span>
                         </div>
-                        <div class="flex justify-between items-center border-b border-white/10 pb-3">
-                            <span class="font-medium text-blue-100 text-sm uppercase tracking-wide" data-i18n="day_friday">Friday</span>
-                            <span class="font-bold text-lg opacity-50" data-i18n="hours_closed">Closed</span>
+                        <div class="flex justify-between items-center border-b border-white/15 pb-4">
+                            <span class="font-semibold text-blue-100 text-sm" data-i18n="day_friday">Friday</span>
+                            <span class="font-black text-lg opacity-50" data-i18n="hours_closed">Closed</span>
                         </div>
-                        <div class="mt-6 p-4 bg-white/10 border border-white/5 rounded-2xl text-sm text-blue-50">
-                            <p class="flex gap-2 leading-relaxed"><span class="material-symbols-outlined text-sm mt-0.5">info</span> <span data-i18n="hours_note">Emergency consultations available during operating hours.</span></p>
+                        <div class="mt-4 p-4 bg-white/10 border border-white/10 rounded-2xl text-sm text-blue-100 leading-relaxed">
+                            <p class="flex gap-2 items-start">
+                                <span class="material-symbols-outlined text-sm mt-0.5 shrink-0">info</span>
+                                <span data-i18n="hours_note">Emergency consultations available during operating hours.</span>
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Contact Form -->
-        <section id="contact" class="px-4 md:px-10 max-w-[1440px] mx-auto pb-16">
-            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] p-6 md:p-10 lg:p-14 shadow-2xl border border-slate-100 dark:border-slate-700">
+        <!-- ─── Contact ────────────────────────────────────── -->
+        <section id="contact" class="px-4 md:px-10 max-w-[1440px] mx-auto pb-20">
+            <div class="bg-white dark:bg-slate-800 rounded-[2.5rem] p-6 md:p-10 lg:p-14 shadow-2xl border border-slate-100 dark:border-slate-700 scroll-reveal">
                 <div class="flex flex-col lg:flex-row gap-12 lg:gap-16">
+
+                    <!-- Form -->
                     <div class="lg:w-7/12 order-2 lg:order-1">
-                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2" data-i18n="contact_title">Send us a Message</h2>
-                        <p class="text-slate-500 dark:text-gray-400 mb-8" data-i18n="contact_subtitle">Have a question? Fill out the form below.</p>
-                        
+                        <div class="mb-8">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 dark:bg-blue-500/10 text-primary dark:text-blue-400 text-xs font-bold uppercase tracking-wider w-fit border border-primary/20 dark:border-blue-500/20 mb-4">
+                                <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1">mail</span>
+                                <span data-i18n="contact_eyebrow">Get In Touch</span>
+                            </div>
+                            <h2 class="text-3xl font-black text-slate-900 dark:text-white" data-i18n="contact_title">Send us a Message</h2>
+                            <p class="text-slate-500 dark:text-slate-400 mt-2" data-i18n="contact_subtitle">Have a question? Fill out the form below.</p>
+                        </div>
+
                         <form id="contact-form" class="flex flex-col gap-5" action="https://formspree.io/f/mnnrgldp" method="POST" novalidate>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div class="flex flex-col gap-2">
-                                    <label for="name" class="text-xs font-bold text-slate-500 uppercase tracking-wider" data-i18n="form_name">Name</label>
-                                    <input id="name" name="name" 
-                                           class="text-base md:text-sm rounded-xl border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 py-3.5 px-4 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white transition-all outline-none" 
+                                    <label for="name" class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider" data-i18n="form_name">Name</label>
+                                    <input id="name" name="name"
+                                           class="rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 py-3.5 px-4 text-sm focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white transition-all outline-none hover:border-slate-300 dark:hover:border-slate-500"
                                            data-placeholder="form_ph_name" placeholder="Jane Doe" type="text" required minlength="3"/>
                                     <div class="error-message text-red-500 text-xs hidden" data-i18n="error_name">Name is required (3+ chars).</div>
                                 </div>
                                 <div class="flex flex-col gap-2">
-                                    <label for="phone" class="text-xs font-bold text-slate-500 uppercase tracking-wider" data-i18n="form_phone">Phone (Optional)</label>
-                                    <input id="phone" name="phone" 
-                                           class="text-base md:text-sm rounded-xl border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 py-3.5 px-4 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white transition-all outline-none" 
+                                    <label for="phone" class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider" data-i18n="form_phone">Phone (Optional)</label>
+                                    <input id="phone" name="phone"
+                                           class="rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 py-3.5 px-4 text-sm focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white transition-all outline-none hover:border-slate-300 dark:hover:border-slate-500"
                                            data-placeholder="form_ph_phone" placeholder="09xx xxx xxx" type="tel"/>
                                 </div>
                             </div>
+
                             <div class="flex flex-col gap-2">
-                                <label for="email" class="text-xs font-bold text-slate-500 uppercase tracking-wider" data-i18n="form_email">Email Address</label>
-                                <input id="email" name="email" 
-                                       class="text-base md:text-sm rounded-xl border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 py-3.5 px-4 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white transition-all outline-none" 
+                                <label for="email" class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider" data-i18n="form_email">Email Address</label>
+                                <input id="email" name="email"
+                                       class="rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 py-3.5 px-4 text-sm focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white transition-all outline-none hover:border-slate-300 dark:hover:border-slate-500"
                                        data-placeholder="form_ph_email" placeholder="jane@example.com" type="email" required/>
                                 <div class="error-message text-red-500 text-xs hidden" data-i18n="error_email">Valid email is required.</div>
                             </div>
+
                             <div class="flex flex-col gap-2">
-                                <label for="message" class="text-xs font-bold text-slate-500 uppercase tracking-wider" data-i18n="form_message">Message</label>
-                                <textarea id="message" name="message" 
-                                          class="text-base md:text-sm rounded-xl border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 py-3.5 px-4 focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white h-32 resize-none transition-all outline-none" 
+                                <label for="message" class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider" data-i18n="form_message">Message</label>
+                                <textarea id="message" name="message"
+                                          class="rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 py-3.5 px-4 text-sm focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white h-32 resize-none transition-all outline-none hover:border-slate-300 dark:hover:border-slate-500"
                                           data-placeholder="form_ph_message" placeholder="How can we help you?" required minlength="10"></textarea>
                                 <div class="error-message text-red-500 text-xs hidden" data-i18n="error_message">Message is required (10+ chars).</div>
                             </div>
-                            
-                            <button class="mt-4 bg-primary hover:bg-blue-800 text-white py-4 px-8 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20 w-full md:w-auto md:self-start flex items-center justify-center gap-2 active:scale-95" type="submit">
-                                <span data-i18n="form_submit">Send Message</span> <span class="material-symbols-outlined text-sm flip-rtl">send</span>
+
+                            <button class="mt-2 flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white py-4 px-8 rounded-xl font-bold transition-all shadow-brand hover:-translate-y-0.5 hover:shadow-brand-lg w-full md:w-auto md:self-start active:scale-95 cursor-pointer" type="submit">
+                                <span data-i18n="form_submit">Send Message</span>
+                                <span class="material-symbols-outlined text-sm flip-rtl" style="font-variation-settings:'FILL' 1">send</span>
                             </button>
                             <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+                            <p class="text-xs text-slate-400 dark:text-slate-500 leading-relaxed" data-i18n="recaptcha_notice">
+                                This site is protected by reCAPTCHA and the Google
+                                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-600 dark:hover:text-slate-400 transition-colors">Privacy Policy</a>
+                                and
+                                <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-600 dark:hover:text-slate-400 transition-colors">Terms of Service</a>
+                                apply.
+                            </p>
                         </form>
-                        <div id="form-success-message" class="mt-4 p-4 rounded-xl bg-green-100 text-green-800 text-sm hidden font-medium text-center" data-i18n="form_success">Thank you! Your message has been sent.</div>
+
+                        <div id="form-success-message" class="mt-4 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-300 text-sm hidden font-semibold text-center" data-i18n="form_success">
+                            Thank you! Your message has been sent.
+                        </div>
                     </div>
-                    
+
+                    <!-- Contact Info -->
                     <div class="lg:w-5/12 order-1 lg:order-2 flex flex-col justify-center">
                         <div class="bg-slate-50 dark:bg-slate-900/50 rounded-3xl p-8 border border-slate-100 dark:border-slate-700/50">
                             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-8" data-i18n="contact_info_title">Contact Information</h3>
-                            <div class="space-y-8">
-                                <div class="flex items-start gap-5 group">
-                                    <div class="size-12 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                                        <span class="material-symbols-outlined">call</span>
+                            <div class="space-y-7">
+
+                                <a href="tel:+963940252613" class="flex items-start gap-5 group cursor-pointer">
+                                    <div class="size-12 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-primary dark:text-blue-400 shrink-0 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300">
+                                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">call</span>
                                     </div>
-                                    <div class="break-all">
+                                    <div class="break-all pt-0.5">
                                         <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1" data-i18n="info_phone">Phone</p>
-                                        <a href="tel:+963940252613" class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors dir-ltr" style="direction: ltr; unicode-bidi: embed;">+963 940 252 613</a>
+                                        <span class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary dark:group-hover:text-blue-400 transition-colors" style="direction: ltr; unicode-bidi: embed;">+963 940 252 613</span>
                                     </div>
-                                </div>
-                                <div class="flex items-start gap-5 group">
-                                    <div class="size-12 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                                        <span class="material-symbols-outlined">mail</span>
+                                </a>
+
+                                <a href="mailto:mohammadpharmacy.sy@gmail.com" class="flex items-start gap-5 group cursor-pointer">
+                                    <div class="size-12 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-primary dark:text-blue-400 shrink-0 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300">
+                                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">mail</span>
                                     </div>
-                                    <div class="break-all">
+                                    <div class="break-all pt-0.5">
                                         <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1" data-i18n="info_email">Email</p>
-                                        <a href="mailto:mohammadpharmacy.sy@gmail.com" class="no-wrap-dynamic-email text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">mohammadpharmacy.sy@gmail.com</a>
+                                        <span class="no-wrap-dynamic-email text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary dark:group-hover:text-blue-400 transition-colors">mohammadpharmacy.sy@gmail.com</span>
                                     </div>
-                                </div>
-                                <div class="flex items-start gap-5 group">
-                                    <div class="size-12 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-primary shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                                        <span class="material-symbols-outlined">location_on</span>
+                                </a>
+
+                                <a href="#map" class="flex items-start gap-5 group cursor-pointer">
+                                    <div class="size-12 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-primary dark:text-blue-400 shrink-0 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300">
+                                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">location_on</span>
                                     </div>
-                                    <div>
+                                    <div class="pt-0.5">
                                         <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1" data-i18n="info_address">Address</p>
-                                        <p class="text-lg font-bold text-slate-900 dark:text-white leading-tight" data-i18n="info_address_val">Main Street, Salhiyaa,<br/>Yabroud, Rif-Dimashq</p>
+                                        <p class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary dark:group-hover:text-blue-400 transition-colors leading-snug" data-i18n="info_address_val">Main Street, Salhiyaa,<br/>Yabroud, Rif-Dimashq</p>
                                     </div>
-                                </div>
+                                </a>
+
+                                <a href="https://www.instagram.com/durbaa_pharmacy/" target="_blank" rel="noopener noreferrer" class="flex items-start gap-5 group cursor-pointer">
+                                    <div class="size-12 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0 group-hover:bg-gradient-to-br group-hover:from-purple-500 group-hover:via-pink-500 group-hover:to-orange-400 group-hover:text-white group-hover:border-transparent transition-all duration-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" aria-hidden="true">
+                                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="pt-0.5">
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1" data-i18n="info_instagram">Instagram</p>
+                                        <span class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-pink-500 transition-colors">@durbaa_pharmacy</span>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -434,27 +629,80 @@
         </section>
     </main>
 
-    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark py-8 fade-in fade-in--f">
-        <div class="max-w-[1440px] mx-auto px-4 md:px-10 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="flex items-center justify-center size-8 bg-white/0">
-                    <img src="/photos/logo.png" alt="Mohammad Pharmacy logo" class="w-8 h-8 object-cover">
+    <!-- ─── Footer ────────────────────────────────────────── -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark py-10 fade-in fade-in--f">
+        <div class="max-w-[1440px] mx-auto px-4 md:px-10">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
+
+                <!-- Brand -->
+                <div class="flex flex-col items-center md:items-start gap-3">
+                    <div class="flex items-center gap-3">
+                        <img src="/photos/logo.png" alt="Mohammad Pharmacy logo" class="w-8 h-8 object-cover">
+                        <span class="text-slate-900 dark:text-white font-bold text-lg" data-i18n="brand_name">Mohammad Pharmacy</span>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm text-center md:text-left rtl:md:text-right" data-i18n="footer_tagline">Trusted care in the heart of Yabroud.</p>
                 </div>
-                <span class="text-slate-900 dark:text-white font-bold text-lg" data-i18n="brand_name">Mohammad Pharmacy</span>
+
+                <!-- Quick Links + Social -->
+                <div class="flex flex-col items-center md:items-end gap-5">
+                    <nav class="flex flex-wrap justify-center md:justify-end gap-x-8 gap-y-3" aria-label="Footer navigation">
+                        <a href="#top" class="text-sm text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-blue-400 transition-colors font-medium cursor-pointer" data-i18n="nav_home">Home</a>
+                        <a href="#services" class="text-sm text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-blue-400 transition-colors font-medium cursor-pointer" data-i18n="nav_services">Services</a>
+                        <a href="#about" class="text-sm text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-blue-400 transition-colors font-medium cursor-pointer" data-i18n="nav_about">About</a>
+                        <a href="#map" class="text-sm text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-blue-400 transition-colors font-medium cursor-pointer" data-i18n="nav_location">Location</a>
+                        <a href="#contact" class="text-sm text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-blue-400 transition-colors font-medium cursor-pointer" data-i18n="nav_contact">Contact Us</a>
+                    </nav>
+                    <!-- Social Links -->
+                    <div class="flex items-center gap-3">
+                        <a href="https://www.instagram.com/durbaa_pharmacy/"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-gradient-to-br hover:from-purple-500 hover:via-pink-500 hover:to-orange-400 hover:text-white transition-all duration-300 cursor-pointer group"
+                           aria-label="Follow us on Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 shrink-0" aria-hidden="true">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                            </svg>
+                            <span class="text-sm font-semibold">@durbaa_pharmacy</span>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="text-center text-xs text-slate-400">
+
+            <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-400">
                 © <span id="current-year"></span> <span data-i18n="footer_rights">Mohammad Pharmacy. All rights reserved.</span>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- ─── Floating Action Buttons (Phone + WhatsApp) ───── -->
+    <div id="fab" class="fixed bottom-6 right-6 rtl:right-auto rtl:left-6 z-50 flex flex-col-reverse gap-3" role="complementary" aria-label="Quick contact">
+        <!-- WhatsApp -->
+        <a href="https://wa.me/963940252613"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="flex items-center justify-center w-14 h-14 rounded-2xl bg-[#25D366] hover:bg-[#1ebd5a] text-white shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 active:scale-95 cursor-pointer"
+           aria-label="Chat on WhatsApp">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+        </a>
+        <!-- Phone call -->
+        <a href="tel:+963940252613"
+           class="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary hover:bg-primary-hover text-white shadow-brand hover:shadow-brand-lg transition-all hover:-translate-y-1 active:scale-95 cursor-pointer"
+           aria-label="Call us">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6" aria-hidden="true">
+                <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z" clip-rule="evenodd"/>
+            </svg>
+        </a>
+    </div>
+
+    <!-- ─── Scripts ───────────────────────────────────────── -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LfrYRUsAAAAAAavLZzwCvEwdAVLHCiiJfbLYbIH" async defer></script>
     <script>
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
-        // --- Translations ---
-        const translations = {
+        // ── Translations ──────────────────────────────────────
+        var translations = {
             en: {
                 page_title: "Mohammad Pharmacy | Trusted Care in Yabroud",
                 brand_name: "Mohammad Pharmacy",
@@ -469,6 +717,10 @@
                 hero_desc: "Your trusted, modern pharmacy in the heart of Yabroud. Professional services, expert advice, and care you can rely on.",
                 hero_cta_contact: "Contact Us",
                 hero_cta_visit: "Visit Us",
+                chip_hours: "Open till 1 AM",
+                chip_edu: "Damascus University",
+                chip_location: "Yabroud, Syria",
+                services_eyebrow: "What We Offer",
                 services_title: "Holistic Health Services",
                 services_desc: "Beyond just filling prescriptions, we offer a range of services designed for your complete well-being.",
                 service_1_title: "Prescriptions",
@@ -477,18 +729,24 @@
                 service_2_desc: "Professional consultation with our expert staff to discuss your health goals.",
                 service_3_title: "Wellness Products",
                 service_3_desc: "A wide range of health and wellness items to support your holistic lifestyle.",
+                about_eyebrow: "Our Team",
                 about_title: "Meet Your Pharmacist",
                 pharmacist_name: "Dr. Mohammad Deeb Durbaa",
                 pharmacist_role: "Lead Pharmacist & Owner",
-                pharmacist_quote: "\"Serving the Yabroud community with dedication and professional care. At Mohammad Pharmacy, we believe in providing more than just medication—we provide personalized health solutions.\"",
+                pharmacist_quote: "Serving the Yabroud community with dedication and professional care. At Mohammad Pharmacy, we believe in providing more than just medication—we provide personalized health solutions.",
                 pharmacist_badge_1: "Damascus University Graduate",
                 pharmacist_badge_2: "Community Leader",
+                map_eyebrow: "Find Us",
+                map_title: "Location & Hours",
                 hours_title: "Working Hours",
-                days_week: "Sat - Thu",
+                days_week: "Sat – Thu",
                 day_friday: "Friday",
-                hours_open: "8:30AM - 1AM",
+                hours_open: "8:30 AM – 1 AM",
                 hours_closed: "Closed",
                 hours_note: "Emergency consultations available during operating hours.",
+                status_open: "Open Now",
+                status_closed: "Closed Now",
+                contact_eyebrow: "Get In Touch",
                 contact_title: "Send us a Message",
                 contact_subtitle: "Have a question? Fill out the form below.",
                 form_name: "Name",
@@ -509,6 +767,9 @@
                 info_email: "Email",
                 info_address: "Address",
                 info_address_val: "Main Street, Salhiyaa,<br/>Yabroud, Rif-Dimashq",
+                info_instagram: "Instagram",
+                recaptcha_notice: 'This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-600 dark:hover:text-slate-400 transition-colors">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-600 dark:hover:text-slate-400 transition-colors">Terms of Service</a> apply.',
+                footer_tagline: "Trusted care in the heart of Yabroud.",
                 footer_rights: "Mohammad Pharmacy. All rights reserved."
             },
             ar: {
@@ -525,6 +786,10 @@
                 hero_desc: "صيدليتك الحديثة والموثوقة في قلب يبرود. نقدم خدمات صحية احترافية، استشارات متخصصة، ورعاية يمكنك الاعتماد عليها.",
                 hero_cta_contact: "تواصل معنا",
                 hero_cta_visit: "زورونا",
+                chip_hours: "مفتوح حتى ١ ليلاً",
+                chip_edu: "جامعة دمشق",
+                chip_location: "يبرود، سوريا",
+                services_eyebrow: "خدماتنا",
                 services_title: "خدمات صحية شاملة",
                 services_desc: "أكثر من مجرد صرف للدواء، نقدم مجموعة من الخدمات المصممة لرفاهيتك الكاملة.",
                 service_1_title: "صرف الوصفات",
@@ -533,18 +798,24 @@
                 service_2_desc: "استشارة مهنية مع كادرنا الخبير لمناقشة أهدافك الصحية.",
                 service_3_title: "منتجات العناية",
                 service_3_desc: "مجموعة واسعة من منتجات الصحة والعناية لدعم نمط حياتك الصحي.",
+                about_eyebrow: "فريقنا",
                 about_title: "تعرف على الصيدلاني",
                 pharmacist_name: "د. محمد ديب درباع",
                 pharmacist_role: "صيدلاني و المالك",
-                pharmacist_quote: "\"خدمة مجتمع يبرود بتفانٍ ورعاية مهنية. في صيدلية محمد، نؤمن بتقديم أكثر من مجرد دواء—نحن نقدم حلولاً صحية مخصصة.\"",
+                pharmacist_quote: "خدمة مجتمع يبرود بتفانٍ ورعاية مهنية. في صيدلية محمد، نؤمن بتقديم أكثر من مجرد دواء—نحن نقدم حلولاً صحية مخصصة.",
                 pharmacist_badge_1: "خريج جامعة دمشق",
                 pharmacist_badge_2: "قيادي في المجتمع",
+                map_eyebrow: "جدنا",
+                map_title: "الموقع وساعات العمل",
                 hours_title: "ساعات العمل",
                 days_week: "السبت - الخميس",
                 day_friday: "الجمعة",
                 hours_open: "٨:٣٠ صباحاً - ١ ليلاً",
                 hours_closed: "مغلق",
                 hours_note: "الاستشارات الطارئة متاحة خلال ساعات العمل.",
+                status_open: "مفتوح الآن",
+                status_closed: "مغلق الآن",
+                contact_eyebrow: "تواصل معنا",
                 contact_title: "أرسل لنا رسالة",
                 contact_subtitle: "لديك استفسار؟ املأ النموذج أدناه.",
                 form_name: "الاسم",
@@ -565,18 +836,20 @@
                 info_email: "البريد الإلكتروني",
                 info_address: "العنوان",
                 info_address_val: "الشارع الرئيسي، الصالحية،<br/>يبرود، ريف دمشق",
+                info_instagram: "إنستغرام",
+                recaptcha_notice: 'This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-600 dark:hover:text-slate-400 transition-colors">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" class="underline hover:text-slate-600 dark:hover:text-slate-400 transition-colors">Terms of Service</a> apply.',
+                footer_tagline: "رعاية موثوقة في قلب يبرود.",
                 footer_rights: "صيدلية محمد. جميع الحقوق محفوظة."
             }
         };
 
-        const langToggle = document.getElementById('lang-toggle');
-        const html = document.documentElement;
-        
+        // ── Language ──────────────────────────────────────────
+        var html = document.documentElement;
+        var langToggle = document.getElementById('lang-toggle');
+
         function setLanguage(lang) {
             html.setAttribute('lang', lang);
             html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-            
-            // Switch font class on HTML element
             if (lang === 'ar') {
                 html.classList.remove('font-display');
                 html.classList.add('font-arabic');
@@ -584,173 +857,228 @@
                 html.classList.remove('font-arabic');
                 html.classList.add('font-display');
             }
-
-            const elements = document.querySelectorAll('[data-i18n]');
-            elements.forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang][key]) el.innerHTML = translations[lang][key];
+            // Update lang-toggle label
+            var langLabel = document.getElementById('lang-label');
+            if (langLabel) langLabel.textContent = lang === 'ar' ? 'EN' : 'AR';
+            document.querySelectorAll('[data-i18n]').forEach(function(el) {
+                var key = el.getAttribute('data-i18n');
+                if (translations[lang][key] !== undefined) el.innerHTML = translations[lang][key];
             });
-
-            const inputs = document.querySelectorAll('[data-placeholder]');
-            inputs.forEach(el => {
-                const key = el.getAttribute('data-placeholder');
+            document.querySelectorAll('[data-placeholder]').forEach(function(el) {
+                var key = el.getAttribute('data-placeholder');
                 if (translations[lang][key]) el.setAttribute('placeholder', translations[lang][key]);
             });
-
             localStorage.setItem('lang', lang);
+            updateOpenStatus();
         }
 
-        langToggle.addEventListener('click', () => {
-            const currentLang = html.getAttribute('lang');
-            setLanguage(currentLang === 'en' ? 'ar' : 'en');
+        langToggle.addEventListener('click', function() {
+            setLanguage(html.getAttribute('lang') === 'en' ? 'ar' : 'en');
         });
 
-        // Initialize language (content update only; attributes handled in head)
-        const savedLang = localStorage.getItem('lang') || 'en';
-        setLanguage(savedLang);
+        // ── Theme Toggle ──────────────────────────────────────
+        var themeToggle = document.getElementById('theme-toggle');
+        var themeIcon   = document.getElementById('theme-icon');
 
-        // --- Mobile Menu ---
-        const menuBtn = document.getElementById('menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
-        let isMenuOpen = false;
+        function applyTheme(isDark) {
+            if (isDark) {
+                html.classList.add('dark');
+                themeIcon.textContent = 'dark_mode';
+            } else {
+                html.classList.remove('dark');
+                themeIcon.textContent = 'light_mode';
+            }
+        }
+
+        applyTheme(html.classList.contains('dark'));
+
+        themeToggle.addEventListener('click', function() {
+            var isDark = !html.classList.contains('dark');
+            applyTheme(isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // ── Mobile Menu ───────────────────────────────────────
+        var menuBtn    = document.getElementById('menu-btn');
+        var mobileMenu = document.getElementById('mobile-menu');
+        var mobileLinks = document.querySelectorAll('.mobile-link');
+        var isMenuOpen = false;
 
         function toggleMenu() {
             isMenuOpen = !isMenuOpen;
-            if (isMenuOpen) {
-                mobileMenu.classList.add('open');
-                menuBtn.querySelector('span').textContent = 'close';
-                document.body.style.overflow = 'hidden';
-            } else {
-                mobileMenu.classList.remove('open');
-                menuBtn.querySelector('span').textContent = 'menu';
-                document.body.style.overflow = '';
+            mobileMenu.classList.toggle('open', isMenuOpen);
+            menuBtn.querySelector('span').textContent = isMenuOpen ? 'close' : 'menu';
+            menuBtn.setAttribute('aria-expanded', String(isMenuOpen));
+            document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+        }
+
+        menuBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleMenu(); });
+        document.addEventListener('click', function(e) {
+            if (isMenuOpen && !mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) toggleMenu();
+        });
+        mobileLinks.forEach(function(link) {
+            link.addEventListener('click', function() { if (isMenuOpen) toggleMenu(); });
+        });
+
+        // ── Scroll Spy ────────────────────────────────────────
+        var navLinks = document.querySelectorAll('.nav-link');
+        var spyObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (!entry.isIntersecting) return;
+                var id = entry.target.getAttribute('id');
+                navLinks.forEach(function(link) {
+                    var isActive = link.getAttribute('href') === '#' + id ||
+                        (link.getAttribute('href') === '#top' && id === 'hero');
+                    link.classList.toggle('is-active', isActive);
+                });
+            });
+        }, { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+        document.querySelectorAll('section[id]').forEach(function(s) { spyObserver.observe(s); });
+
+        // ── Scroll Progress + Header Shrink ───────────────────
+        var progressBar = document.getElementById('scroll-progress');
+        var mainHeader  = document.getElementById('main-header');
+        var rafScheduled = false;
+
+        function onScroll() {
+            var docH = document.documentElement.scrollHeight - window.innerHeight;
+            progressBar.style.width = (docH > 0 ? (window.scrollY / docH) * 100 : 0) + '%';
+            mainHeader.classList.toggle('scrolled', window.scrollY > 60);
+        }
+
+        window.addEventListener('scroll', function() {
+            if (!rafScheduled) {
+                rafScheduled = true;
+                requestAnimationFrame(function() { onScroll(); rafScheduled = false; });
+            }
+        }, { passive: true });
+
+        // ── Open/Closed Status ────────────────────────────────
+        function isPharmacyOpen() {
+            try {
+                var d = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Damascus' }));
+                var day  = d.getDay(); // 0=Sun,1=Mon,...,5=Fri,6=Sat
+                var mins = d.getHours() * 60 + d.getMinutes();
+                if (day === 5) return false;                    // Friday: fully closed
+                if (day === 6 && mins < 60) return false;       // Sat 0:00-1:00: tail of closed Friday
+                return mins < 60 || mins >= 510;                // open 0:00-1:00 or 8:30+
+            } catch(e) { return false; }
+        }
+
+        function updateOpenStatus() {
+            var statusEl = document.getElementById('open-status');
+            var textEl   = document.getElementById('open-text');
+            var dotEl    = document.getElementById('open-dot');
+            if (!statusEl || !textEl) return;
+            var lang = html.getAttribute('lang') || 'en';
+            var open = isPharmacyOpen();
+            textEl.textContent = open
+                ? (translations[lang].status_open  || 'Open Now')
+                : (translations[lang].status_closed || 'Closed Now');
+            statusEl.className = 'inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold w-fit mb-6 relative z-10 ' +
+                (open ? 'status-pill-open' : 'status-pill-closed');
+            if (dotEl) {
+                dotEl.className = 'w-2 h-2 rounded-full bg-current shrink-0' + (open ? ' status-dot-open' : '');
             }
         }
 
-        menuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleMenu();
-        });
-
-        document.addEventListener('click', (e) => {
-            if (isMenuOpen && !mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
-                toggleMenu();
-            }
-        });
-
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if(isMenuOpen) toggleMenu();
-            });
-        });
-
-        // --- Scroll Spy ---
-        const observerOptions = { root: null, rootMargin: '-20% 0px -60% 0px', threshold: 0 };
-        const navLinks = document.querySelectorAll('.nav-link');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+        // ── Scroll Reveal ─────────────────────────────────────
+        var revealObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
                 if (entry.isIntersecting) {
-                    const id = entry.target.getAttribute('id');
-                    navLinks.forEach(link => {
-                        link.classList.remove('text-primary', 'dark:text-blue-400');
-                        if (link.getAttribute('href') === `#${id}` || (link.getAttribute('href') === '#top' && id === 'hero')) {
-                            link.classList.add('text-primary', 'dark:text-blue-400');
-                        }
-                    });
+                    entry.target.classList.add('is-visible');
+                    revealObserver.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
-        document.querySelectorAll('section[id]').forEach(section => observer.observe(section));
+        }, { root: null, rootMargin: '0px 0px -48px 0px', threshold: 0.08 });
 
-        // --- Contact Form & reCAPTCHA ---
-        const form = document.getElementById('contact-form');
-        const successMessage = document.getElementById('form-success-message');
-        const RECAPTCHA_SITE_KEY = '6LfrYRUsAAAAAAavLZzwCvEwdAVLHCiiJfbLYbIH';
+        document.querySelectorAll('.scroll-reveal').forEach(function(el) {
+            revealObserver.observe(el);
+        });
 
-        (function observeContactBadge() {
-            const contactSection = document.getElementById('contact');
-            if (!contactSection) return;
-            const io = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        document.body.classList.add('show-recaptcha-badge');
-                    } else {
-                        document.body.classList.remove('show-recaptcha-badge');
-                    }
-                });
-            }, { root: null, threshold: 0.1 });
-            io.observe(contactSection);
-        })();
+        // ── Floating Button ───────────────────────────────────
+        setTimeout(function() {
+            var fab = document.getElementById('fab');
+            if (fab) fab.classList.add('fab-visible');
+        }, 1600);
+
+
+        // ── Contact Form Submission ───────────────────────────
+        var form           = document.getElementById('contact-form');
+        var successMessage = document.getElementById('form-success-message');
+        var RECAPTCHA_KEY  = '6LfrYRUsAAAAAAavLZzwCvEwdAVLHCiiJfbLYbIH';
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
-            let isValid = true;
-            
-            const inputs = form.querySelectorAll('input[required], textarea[required]');
-            inputs.forEach(input => {
-                const error = input.nextElementSibling;
-                if (!input.value.trim() || !input.checkValidity()) {
-                    error?.classList.remove('hidden');
-                    input.classList.add('border-red-500');
-                    isValid = false;
-                } else {
-                    error?.classList.add('hidden');
-                    input.classList.remove('border-red-500');
-                }
+            var isValid = true;
+            form.querySelectorAll('input[required], textarea[required]').forEach(function(input) {
+                var error   = input.nextElementSibling;
+                var invalid = !input.value.trim() || !input.checkValidity();
+                error && error.classList.toggle('hidden', !invalid);
+                input.classList.toggle('border-red-500', invalid);
+                if (invalid) isValid = false;
                 input.addEventListener('input', function() {
-                    if(this.value.trim()) {
+                    if (this.value.trim()) {
                         this.classList.remove('border-red-500');
-                        this.nextElementSibling?.classList.add('hidden');
+                        this.nextElementSibling && this.nextElementSibling.classList.add('hidden');
                     }
-                }, {once: true});
+                }, { once: true });
             });
-
             if (!isValid) return;
 
-            const btn = form.querySelector('button');
-            const originalBtnHTML = btn.innerHTML;
-            const isAr = html.getAttribute('lang') === 'ar';
-            btn.innerHTML = isAr ? '...جاري الإرسال' : 'Sending...';
-            btn.disabled = true;
+            var btn         = form.querySelector('button[type="submit"]');
+            var origHTML    = btn.innerHTML;
+            var isAr        = html.getAttribute('lang') === 'ar';
+            btn.innerHTML   = isAr ? '<span>...جاري الإرسال</span>' : '<span>Sending…</span>';
+            btn.disabled    = true;
 
-            const doSubmitWithToken = async () => {
+            var doSubmit = async function() {
                 try {
-                    const token = await grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'submit' });
+                    var token = await grecaptcha.execute(RECAPTCHA_KEY, { action: 'submit' });
                     document.getElementById('g-recaptcha-response').value = token;
-                    const response = await fetch(form.action, {
+                    var res = await fetch(form.action, {
                         method: 'POST',
                         body: new FormData(form),
                         headers: { 'Accept': 'application/json' }
                     });
-                    if (response.ok) {
+                    if (res.ok) {
                         form.reset();
                         successMessage.classList.remove('hidden');
-                        setTimeout(() => successMessage.classList.add('hidden'), 5000);
+                        setTimeout(function() { successMessage.classList.add('hidden'); }, 5000);
                     } else {
                         alert(isAr ? 'حدث خطأ. يرجى المحاولة مرة أخرى.' : 'Submission failed. Please try again.');
                     }
-                } catch (error) {
+                } catch(err) {
                     alert(isAr ? 'خطأ في الشبكة.' : 'Network error. Please try again.');
                 } finally {
-                    btn.innerHTML = originalBtnHTML;
-                    btn.disabled = false;
+                    btn.innerHTML = origHTML;
+                    btn.disabled  = false;
                 }
             };
 
             if (typeof grecaptcha === 'undefined') {
                 alert(isAr ? 'خطأ في الاتصال بالتحقق.' : 'Captcha not ready. Please try again later.');
-                btn.innerHTML = originalBtnHTML;
-                btn.disabled = false;
+                btn.innerHTML = origHTML;
+                btn.disabled  = false;
             } else {
-                grecaptcha.ready(doSubmitWithToken);
+                grecaptcha.ready(doSubmit);
             }
         });
 
-        // Page Load Animation
+        // ── Page Load ─────────────────────────────────────────
         window.addEventListener('load', function() {
-            requestAnimationFrame(function() { document.body.classList.add('loaded'); });
+            requestAnimationFrame(function() {
+                document.body.classList.add('loaded');
+                // Immediately reveal in-viewport scroll-reveal elements
+                document.querySelectorAll('.scroll-reveal').forEach(function(el) {
+                    var rect = el.getBoundingClientRect();
+                    if (rect.top < window.innerHeight - 40) el.classList.add('is-visible');
+                });
+            });
         });
+
+        // Init language + open status (theme already set by anti-FOUC script)
+        setLanguage(localStorage.getItem('lang') || 'en');
     </script>
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "ddbfdfa6ae0740e284570a1bb50c9472"}'></script>
 </body>
